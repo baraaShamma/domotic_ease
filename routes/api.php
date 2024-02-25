@@ -37,6 +37,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('addSecondaryUser', [UserController::class, 'addSecondaryUser']);
     Route::post('addSecondaryRoom', [UserController::class, 'addSecondaryRoom']);
     Route::post('getUserDetails', [UserController::class, 'getUserDetails']);
+    Route::post('getUserEspIds', [UserController::class, 'getUserEspIds']);
 
 });
 

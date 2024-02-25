@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Users\Room;
 use App\Models\Users\Device;
+use App\Models\Users\EspHome;
 use App\Models\secondaryUsers\SecondaryUser;
 use Illuminate\Support\Facades\Hash;
 use App\Models\secondaryUsers\SecondaryRoom;
@@ -110,21 +111,24 @@ class UserController extends Controller
             $device->save();
             return response()->json(['status' => 'success', 'message' => 'Device state updated successfully']);
         }
+        else {
+            return response()->json(['status' => 'updated']);
+        }
     }
-    if($device->state==1){
+    else if($device->state==1){
         if($device_state==0){
             $device->state=0;
             $device->save();
             return response()->json(['status' => 'success', 'message' => 'Device state updated successfully']);
+        }
+        else {
+            return response()->json(['status' => 'updated']);
         }
     }
     
 
     // استجابة بنجاح
 }
-
-
-
     public function addSecondaryUser(Request $request)
     {
         // تحقق من صحة الطلب
@@ -138,7 +142,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'اسم المستخدم موجود مسبقاً'
-            ], 400);
+            ], 200);
         }
 
         // تجزئة كلمة المرور
@@ -190,5 +194,19 @@ public function getUserDetails(Request $request)
     }
 
     return response()->json(['status' => 'success', 'data' => $userDetails], 200);
+}
+
+public function getUserEspIds(Request $request)
+{
+    $request->validate([
+        'id_user' => 'required|integer',
+    ]);
+
+    $id_user = $request->input('id_user');
+
+    // الحصول على جميع معرفات الأجهزة المرتبطة بالمستخدم
+    $espIds = EspHome::where('id_user', $id_user)->pluck('id_esp')->toArray();
+
+    return response()->json(['status' => 'success', 'data' => $espIds], 200);
 }
 }
